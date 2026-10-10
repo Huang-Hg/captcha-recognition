@@ -1,0 +1,48 @@
+{
+  "framework": "captcha-recognition",
+  "version": "0.1.0",
+  "scope_confirmed_by_user": "Multi-source text: digits, uppercase, lowercase, variable length, distortion and occlusion",
+  "modules": {
+    "data": "Hash-checked image and mask manifests; answer and pixel isolation audited separately",
+    "vocabulary": "Explicit character vocabulary, CTC blank, AR BOS/EOS/PAD; repeated symbols preserved",
+    "model": "Shared 2D SVTR vision, renderer-supervised foreground, independent CTC and causal attention decoders",
+    "registry": "Explicit legacy and hybrid model adapters with supported decoder declarations",
+    "training": "Frozen-vision attention warmup, then joint optimization; matched CTC control",
+    "evaluation": "Case-sensitive whole-string accuracy and CER by source; validation-only model selection",
+    "inference": "Checkpoint-owned preprocessing and decoding, checksum-checked candidate loading"
+  },
+  "model_schema": 2,
+  "attention_memory": "Full height-by-width encoder grid with 2D sinusoidal positions and image-width padding mask",
+  "hybrid_decoding": "Candidates from CTC and causal attention; equal-weight sum of their sequence log probabilities",
+  "confidence": "Sequence scores and branch agreement are diagnostics, not calibrated confidence",
+  "entrypoints": {
+    "train": "captcha-train",
+    "evaluate": "captcha-evaluate",
+    "recognize": "captcha-recognize"
+  },
+  "installation": "Editable workspace installation in the project virtual environment; pinned OpenOCR assets must remain available",
+  "legacy": "Legacy checkpoints use explicit adapters; local experiment scripts are excluded from Git",
+  "acceptance": "Pending; architecture implementation and training completion alone do not establish strong generalization",
+  "geometry": "Checkpoint-defined height and width; positive multiples of 16; tested at 48x320 and 64x448; oversized aspect ratios fail explicitly",
+  "augmentation": "Optional training-only color and geometric transforms with paired foreground masks and independent random stream; no change to cached images",
+  "reproducibility": "Automatic source snapshot at experiment startup; checksummed candidate and validation-only selection",
+  "usage": [
+    "Install in the project virtual environment: python -m pip install -e .",
+    "Recognize: captcha-recognize --candidate configs/candidate.json --image IMAGE_PATH",
+    "Train: captcha-train --config configs/training.json --initial-checkpoint CHECKPOINT --data DATASET_ROOT --output NEW_EXPERIMENT_ROOT",
+    "Evaluate: captcha-evaluate --checkpoint CHECKPOINT --mode ctc_multiview --manifest MANIFEST_JSON --output NEW_RESULT_JSON"
+  ],
+  "experimental_architectures": {
+    "transfer": "Neutral residual initialization from shared parent; variant recorded in checkpoint",
+    "comparison": "One 600-step continuation per condition, matched initialization and data; local experiment records are excluded from Git",
+    "variants": [
+      "pixel_detail",
+      "column_recurrent",
+      "spatial_experts",
+      "column_rectifier"
+    ],
+    "inference": "CTC and CTC multiview",
+    "checkpoint_family": "dfcr_experimental_v1"
+  },
+  "repository": "https://github.com/Huang-Hg/captcha-recognition"
+}

@@ -1,0 +1,33 @@
+{
+  "model": {
+    "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    "height": 64,
+    "width": 448,
+    "decoder_width": 256,
+    "decoder_layers": 2,
+    "decoder_heads": 8,
+    "dropout": 0.1,
+    "max_length": 16
+  },
+  "training": {
+    "seed": 101,
+    "warmup_steps": 500,
+    "joint_steps": 1500,
+    "batch_size": 32,
+    "evaluation_batch_size": 32,
+    "evaluate_every": 250,
+    "encoder_lr": 2e-05,
+    "ctc_lr": 0.0001,
+    "attention_lr": 0.001,
+    "attention_joint_lr": 0.0003,
+    "attention_weight": 0.5,
+    "weight_decay": 0.01,
+    "augmentation_probability": 0.5
+  },
+  "references": [
+    "https://github.com/Topdu/OpenOCR",
+    "https://github.com/baudm/parseq",
+    "https://aclanthology.org/P17-1048/"
+  ],
+  "scope": "Example two-stage training configuration; not an exact reproduction of a historical run"
+}

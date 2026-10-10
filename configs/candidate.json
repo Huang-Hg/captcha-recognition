@@ -1,0 +1,38 @@
+{
+  "architecture": "dfcr_hybrid_v1",
+  "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+  "input_size": [
+    64,
+    448
+  ],
+  "preprocessing": "svtr_bgr_aspect_pad",
+  "upstream_commit": "1ccfc6ee6161f7133b192e16af3a9265273997ba",
+  "checkpoint": "checkpoints/hybrid_64_augmented_20261010/best_ctc.pth",
+  "checkpoint_sha256": "f44d06e076a392099715a43125af33ec943322531501c126d5c83f7264789553",
+  "decoder": "ctc_multiview",
+  "precision": "fp32",
+  "selection_record": "logs/hybrid_final_20261010/configs/selection_lock.json",
+  "validation_score": 0.9117970541092073,
+  "selection_metric": "50% public-source macro exact + 50% synthetic-group macro exact",
+  "public_source_catalog": "configs/public_data_sources.json",
+  "upstream_source": "assets/upstream/OpenOCR",
+  "model_config": {
+    "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
+    "height": 64,
+    "width": 448,
+    "decoder_width": 256,
+    "decoder_layers": 2,
+    "decoder_heads": 8,
+    "dropout": 0.1,
+    "max_length": 16
+  },
+  "production_replacement": false,
+  "status": "research_candidate_awaiting_cross_source_acceptance",
+  "limits": [
+    "Case-sensitive alphanumeric text; attention generation capped at configured max_length",
+    "Aspect ratio must fit checkpoint canvas; oversized inputs are rejected explicitly",
+    "Reported public test results are observed diagnostics, not a fresh blind acceptance set",
+    "Sequence scores are not calibrated confidence",
+    "DarkNight-derived training includes noncommercial research data"
+  ]
+}

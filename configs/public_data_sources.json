@@ -1,0 +1,46 @@
+{
+  "purpose": "Offline multi-source text recognition research",
+  "label_policy": "Published labels only; predictions are never substituted for ground truth",
+  "sources": [
+    {
+      "repository": "https://github.com/Binghui99/DarkNight_CAPTCHA_dataset",
+      "revision": "472205efc7b3f29a13d876214795d57b541bf4d1",
+      "license": "CC-BY-NC-4.0",
+      "role": "200 mobile_store training examples; other sources held out",
+      "notes": "freecity has 11 unique images among 500 entries; Chinese/math samples outside the 62-character transcription scope are separately excluded"
+    },
+    {
+      "repository": "https://github.com/roncuevas/Captchas",
+      "revision": "61024dad7c77fb94880f6d5490a0d6293e2d2607",
+      "license": "MIT",
+      "role": "Initial whole-source test retained; later add 256 train and 128 validation examples from an answer/pixel-isolated development pool",
+      "notes": "Actual image SHA-256 recorded; published filename IDs do not equal image-byte SHA-256"
+    },
+    {
+      "repository": "https://huggingface.co/datasets/muddokon/outlined-text-captcha",
+      "revision": "6c6a6a6911ae5b3a288378497cb9139e430dee7b",
+      "license": "MIT",
+      "role": "256 train, 128 validation, 100 test; publisher splits retained",
+      "notes": "Real site images from SimpleCaptcha according to publisher; labels are image filenames"
+    },
+    {
+      "repository": "https://huggingface.co/datasets/project-sloth/captcha-images",
+      "revision": "eeaf2b6ec9086645f270f7e2aaa9ea90730683de",
+      "license": "WTFPL",
+      "role": "Up to 512 isolated samples from publisher test; whole source held out",
+      "notes": "Six-digit labels including leading zeroes preserved as strings; real versus synthetic origin unspecified"
+    },
+    {
+      "repository": "https://huggingface.co/datasets/Tuna0000/gib-captcha-labeled",
+      "revision": "03a4facf0ba2ac71a16a64c2e74718ead976d604",
+      "license": "Apache-2.0",
+      "role": "Initial whole-source test retained; later add 200 publisher-train and 128 publisher-validation examples with answer/pixel isolation",
+      "notes": "Publisher states these are manually labeled real images; not independently reannotated by this project"
+    }
+  ],
+  "limitations": [
+    "Pretrained OpenOCR corpus overlap is unknown",
+    "Results already inspected are diagnostic and cannot be called fresh blind tests",
+    "Current model supports alphanumeric text, not all interactive, Chinese or arithmetic CAPTCHA tasks"
+  ]
+}
