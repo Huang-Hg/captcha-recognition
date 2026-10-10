@@ -95,24 +95,24 @@ VARIANTS = dict(pixel_detail=PixelDetail, column_recurrent=ColumnRecurrent,
 class ExperimentalRecognizer(HybridRecognizer):
     architecture = 'dfcr_experimental_v1'
 
-    def __init__(self, visual_config, config, variant, upstream=None):
+    def __init__(self, visual_config, config, variant):
         if variant not in VARIANTS:
             raise ValueError(f'Unknown experimental architecture: {variant}')
-        super().__init__(visual_config, config, upstream)
+        super().__init__(visual_config, config)
         self.variant = variant
         self.variant_block = VARIANTS[variant](self.encoder.out_channels)
 
     @classmethod
-    def from_parent(cls, checkpoint, config, variant, upstream=None):
+    def from_parent(cls, checkpoint, config, variant):
         if checkpoint.get('architecture') == cls.architecture:
-            model = load_experimental(checkpoint, upstream)
+            model = load_experimental(checkpoint)
             if model.config != config or model.variant != variant:
                 raise ValueError('Continuing an experiment requires its recorded variant and geometry')
             return model
-        parent = load_hybrid(checkpoint, upstream)
+        parent = load_hybrid(checkpoint)
         if parent.config != config:
             raise ValueError('Architecture experiments require identical parent geometry/vocabulary')
-        model = cls(checkpoint['model_config'], config, variant, upstream)
+        model = cls(checkpoint['model_config'], config, variant)
         mismatch = model.load_state_dict(parent.state_dict(), strict=False)
         if mismatch.unexpected_keys or any(not key.startswith('variant_block.') for key in mismatch.missing_keys):
             raise ValueError('Unexpected parent transfer mismatch')
@@ -133,7 +133,7 @@ class ExperimentalRecognizer(HybridRecognizer):
         return super().checkpoint(experimental_variant=self.variant, **metadata)
 
 
-def load_experimental(checkpoint, upstream=None):
+def load_experimental(checkpoint):
     if checkpoint.get('architecture') != ExperimentalRecognizer.architecture or checkpoint.get('schema_version') != 2:
         raise ValueError('Invalid experimental schema')
     if checkpoint.get('upstream_commit') != UPSTREAM_COMMIT or checkpoint.get('preprocessing') != 'svtr_bgr_aspect_pad':
@@ -141,6 +141,6 @@ def load_experimental(checkpoint, upstream=None):
     config = HybridConfig(**checkpoint['hybrid_config'])
     if config.alphabet != checkpoint['alphabet'] or checkpoint['input_size'] != [config.height, config.width]:
         raise ValueError('Inconsistent experimental metadata')
-    model = ExperimentalRecognizer(checkpoint['model_config'], config, checkpoint['experimental_variant'], upstream)
+    model = ExperimentalRecognizer(checkpoint['model_config'], config, checkpoint['experimental_variant'])
     model.load_state_dict(checkpoint['model_state_dict'], strict=True)
     return model

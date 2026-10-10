@@ -15,7 +15,6 @@
   "validation_score": 0.9117970541092073,
   "selection_metric": "50% public-source macro exact + 50% synthetic-group macro exact",
   "public_source_catalog": "configs/public_data_sources.json",
-  "upstream_source": "assets/upstream/OpenOCR",
   "model_config": {
     "alphabet": "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz",
     "height": 64,
@@ -34,5 +33,6 @@
     "Reported public test results are observed diagnostics, not a fresh blind acceptance set",
     "Sequence scores are not calibrated confidence",
     "DarkNight-derived training includes noncommercial research data"
-  ]
+  ],
+  "encoder_implementation": "captcha_recognition.backbones"
 }

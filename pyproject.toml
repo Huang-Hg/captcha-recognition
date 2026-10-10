@@ -13,8 +13,7 @@ dependencies = [
   "torchvision>=0.20,<1",
   "numpy>=1.26,<3",
   "Pillow>=10,<12",
-  "opencv-python-headless>=4.8,<5",
-  "PyYAML>=6,<7"
+  "opencv-python-headless>=4.8,<5"
 ]
 
 [project.scripts]
@@ -29,3 +28,6 @@ py-modules = ["dense_ctc", "dense_ctc_wide", "dense_ctc_attention", "svtr_adapte
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["captcha_recognition*"]
+
+[tool.setuptools.package-data]
+"captcha_recognition.backbones" = ["LICENSE", "NOTICE"]

@@ -1,0 +1,23 @@
+Bundled SVTR network components
+
+Source project: OpenOCR, https://github.com/Topdu/OpenOCR
+Source revision: 1ccfc6ee6161f7133b192e16af3a9265273997ba
+Source license: Apache License, Version 2.0 (included as LICENSE).
+Attribution: the OpenOCR authors and contributors.
+
+Files adapted from that revision:
+- layers.py: drop_path, DropPath, Identity and Mlp from openrec/modeling/common.py.
+- ctc_blocks.py: ConvBNLayer, ConvMixer, Attention and Block from
+  openrec/modeling/encoders/svtrnet.py.
+- svtr_encoder.py: openrec/modeling/encoders/svtrv2_lnconv_two33.py.
+- ctc_decoder.py: openrec/modeling/decoders/ctc_decoder.py.
+
+Changes made by this project: extract only required components, replace external
+imports with package-relative imports, and replace string evaluation of the CTC
+normalization class with an explicit LayerNorm check. Network tensor names and
+operations used by the trained checkpoints are preserved. network.py provides a
+local constructor restricted to the supported encoder and CTC decoder.
+
+The external OpenOCR package, checkout, configuration and vocabulary files are
+not required at runtime. This attribution documents code origin; it is not a
+claim that the bundled network components were invented by this project.

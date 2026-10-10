@@ -20,7 +20,7 @@
     "evaluate": "captcha-evaluate",
     "recognize": "captcha-recognize"
   },
-  "installation": "Editable workspace installation in the project virtual environment; pinned OpenOCR assets must remain available",
+  "installation": "Install the Python package in a project virtual environment; network definitions are bundled and do not require an external OCR checkout",
   "legacy": "Legacy checkpoints use explicit adapters; local experiment scripts are excluded from Git",
   "acceptance": "Pending; architecture implementation and training completion alone do not establish strong generalization",
   "geometry": "Checkpoint-defined height and width; positive multiples of 16; tested at 48x320 and 64x448; oversized aspect ratios fail explicitly",
@@ -44,5 +44,6 @@
     "inference": "CTC and CTC multiview",
     "checkpoint_family": "dfcr_experimental_v1"
   },
-  "repository": "https://github.com/Huang-Hg/captcha-recognition"
+  "repository": "https://github.com/Huang-Hg/captcha-recognition",
+  "encoder_implementation": "captcha_recognition.backbones (SVTRv2LNConvTwo33 and CTC neck)"
 }

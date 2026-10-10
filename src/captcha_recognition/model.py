@@ -1,7 +1,6 @@
 """Shared spatial vision with independent CTC and causal attention decoders."""
 import copy
 import math
-from pathlib import Path
 import torch
 from torch import nn
 from .config import HybridConfig
@@ -24,14 +23,13 @@ def position_2d(height, width, channels, device):
 class HybridRecognizer(nn.Module):
     architecture = 'dfcr_hybrid_v1'
 
-    def __init__(self, visual_config, config=None, upstream=None):
+    def __init__(self, visual_config, config=None):
         super().__init__()
         self.config = config or HybridConfig()
         self.vocabulary = Vocabulary(self.config.alphabet)
         self.visual_config = copy.deepcopy(visual_config)
         self.visual_config['Decoder']['out_channels'] = len(self.config.alphabet) + 1
-        upstream = upstream or Path(__file__).resolve().parents[2] / 'assets/upstream/OpenOCR'
-        base = SVTRForegroundCaptcha(self.visual_config, upstream)
+        base = SVTRForegroundCaptcha(self.visual_config)
         self.encoder = base.network.encoder
         self.foreground = base.foreground_head
         self.ctc_neck = base.network.decoder.svtr_encoder
@@ -48,15 +46,15 @@ class HybridRecognizer(nn.Module):
         self.attention_head = nn.Linear(width, len(self.config.alphabet)+1)
 
     @classmethod
-    def from_legacy(cls, checkpoint, config=None, upstream=None):
+    def from_legacy(cls, checkpoint, config=None):
         from model_checkpoints import model_from_checkpoint
         if checkpoint['architecture'] != 'svtrv2_foreground_captcha':
             raise ValueError('Hybrid initialization requires the audited foreground SVTR candidate')
         config = config or HybridConfig(alphabet=checkpoint['alphabet'])
         if config.alphabet != checkpoint['alphabet']:
             raise ValueError('Vocabulary transfer must be explicit')
-        base = model_from_checkpoint(checkpoint, upstream)
-        model = cls(checkpoint['model_config'], config, upstream)
+        base = model_from_checkpoint(checkpoint)
+        model = cls(checkpoint['model_config'], config)
         model.encoder.load_state_dict(base.network.encoder.state_dict(), strict=True)
         model.foreground.load_state_dict(base.foreground_head.state_dict(), strict=True)
         model.ctc_neck.load_state_dict(base.network.decoder.svtr_encoder.state_dict(), strict=True)
@@ -64,17 +62,17 @@ class HybridRecognizer(nn.Module):
         return model
 
     @classmethod
-    def from_transfer(cls, checkpoint, config=None, upstream=None):
+    def from_transfer(cls, checkpoint, config=None):
         if checkpoint.get('architecture') != cls.architecture:
-            return cls.from_legacy(checkpoint, config, upstream)
+            return cls.from_legacy(checkpoint, config)
         previous = HybridConfig(**checkpoint['hybrid_config'])
         config = config or previous
         for key in previous.to_dict():
             if key not in ('height', 'width') and getattr(previous, key) != getattr(config, key):
                 raise ValueError(f'Unsupported transfer contract change: {key}')
         # Geometry uses dynamic positional encodings; it changes no learned tensor shapes.
-        restored = load_hybrid(checkpoint, upstream)
-        model = cls(checkpoint['model_config'], config, upstream)
+        restored = load_hybrid(checkpoint)
+        model = cls(checkpoint['model_config'], config)
         model.load_state_dict(restored.state_dict(), strict=True)
         return model
 
@@ -236,7 +234,7 @@ class HybridRecognizer(nn.Module):
             upstream_commit=UPSTREAM_COMMIT, model_state_dict=self.state_dict(), **metadata)
 
 
-def load_hybrid(checkpoint, upstream=None):
+def load_hybrid(checkpoint):
     if checkpoint.get('schema_version') != 2 or checkpoint.get('architecture') != HybridRecognizer.architecture:
         raise ValueError('Unsupported model checkpoint schema')
     if checkpoint.get('upstream_commit') != UPSTREAM_COMMIT:
@@ -248,6 +246,6 @@ def load_hybrid(checkpoint, upstream=None):
         raise ValueError('Inconsistent checkpoint metadata')
     if checkpoint['preprocessing']=='svtr_bgr_48_zero_pad' and checkpoint['input_size'] != [48, 320]:
         raise ValueError('Legacy preprocessing requires its original geometry')
-    model = HybridRecognizer(checkpoint['model_config'], config, upstream)
+    model = HybridRecognizer(checkpoint['model_config'], config)
     model.load_state_dict(checkpoint['model_state_dict'], strict=True)
     return model

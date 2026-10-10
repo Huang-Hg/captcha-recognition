@@ -25,9 +25,12 @@
     "augmentation_probability": 0.5
   },
   "references": [
-    "https://github.com/Topdu/OpenOCR",
-    "https://github.com/baudm/parseq",
-    "https://aclanthology.org/P17-1048/"
+    "https://arxiv.org/abs/2411.15858",
+    "https://www.cs.toronto.edu/~graves/icml_2006.pdf",
+    "https://arxiv.org/abs/1706.03762",
+    "https://aclanthology.org/P17-1048/",
+    "https://arxiv.org/abs/2207.06966"
   ],
+  "reference_scope": "See README Method attribution: SVTRv2, CTC and Transformer are implementation lineage; Hori et al. and PARSeq are conceptual references, not reproduced algorithms.",
   "scope": "Example two-stage training configuration; not an exact reproduction of a historical run"
 }
